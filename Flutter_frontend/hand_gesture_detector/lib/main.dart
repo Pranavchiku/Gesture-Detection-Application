@@ -45,14 +45,14 @@ class _LandingPageState extends State<LandingPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                "Connect Today..\nTransform tommorow its not just our mission, its our wish for you.",
+                "Show your hand and get the gesture",
                 style: TextStyle(
                   fontSize: 27,
                   fontWeight: FontWeight.bold,
                   color: Colors.grey[600],
                 ),
               ),
-              CustomImage(ImageLink: "assets/landing_page.png"),
+              CustomImage(ImageLink: "images/landing.jpg"),
               Container(
                 height: size.height * 0.07,
                 width: size.width * 0.9,
