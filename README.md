@@ -1,2 +1,2 @@
 # Gesture-Detection-Application
-Confused about an emoji? Open your phone and get an answer ;)
+Developing multi platform gesture detector application by applying concepts learnt in Embedded Systems course on peripheral devices.
