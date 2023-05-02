@@ -86,6 +86,19 @@
   </div>
   <!-- ***** Preloader End ***** -->
 
+  <!-- Script to fetch image and pre process starts here -->
+  <script>
+
+    var loadFile = function (event) {
+      var image = document.getElementById("image");
+      image.src = URL.createObjectURL(event.target.files[0]);
+      document.getElementById("image").style.display = "block";
+    };
+
+  </script>
+
+  <!-- Script ends here-->
+
 
   <!-- ***** Header Area Start ***** -->
   <header class="header-area header-sticky wow slideInDown" data-wow-duration="0.75s" data-wow-delay="0s">
