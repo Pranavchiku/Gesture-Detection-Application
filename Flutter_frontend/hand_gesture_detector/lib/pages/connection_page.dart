@@ -2,6 +2,8 @@
 // import 'package:alumni_connect_app/pages/index.dart';
 // import 'package:alumni_connect_app/pages/post_page.dart';
 // import 'package:alumni_connect_app/widget/alumni_card.dart';
+import 'package:camera/camera.dart';
+import 'package:hand_gesture_detector/pages/camera_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -116,7 +118,15 @@ class ConnectionPageState extends State<ConnectionPage> {
               ),
               IconButton(
                 icon: Icon(Icons.camera, color: Colors.black),
-                onPressed: () {
+                onPressed: () async{
+                  await availableCameras().then(
+                    (value) => Navigator.push(
+                      context, 
+                      // MaterialPageRoute(builder: (context) => CameraExampleHome(),
+                      MaterialPageRoute(builder: (context) => CameraApp(),
+                      ),
+                    ),
+                  );
                   // Navigator.push(
                   //   context,
                     // MaterialPageRoute(
