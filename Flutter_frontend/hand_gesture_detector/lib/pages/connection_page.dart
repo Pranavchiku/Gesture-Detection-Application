@@ -3,10 +3,10 @@
 // import 'package:alumni_connect_app/pages/post_page.dart';
 // import 'package:alumni_connect_app/widget/alumni_card.dart';
 import 'package:camera/camera.dart';
-import 'package:hand_gesture_detector/pages/camera_page.dart';
+// import 'package:hand_gesture_detector/pages/temp1.dart';
 import 'package:flutter/material.dart';
 import 'package:hand_gesture_detector/pages/camera.dart';
-import 'package:hand_gesture_detector/pages/temp2.dart';
+// import 'package:hand_gesture_detector/pages/temp2.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
