@@ -85,7 +85,8 @@
     </div>
   </div>
   <!-- ***** Preloader End ***** -->
-
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.5.2/dist/tf.min.js"></script>
+  <script src="https://unpkg.com/ml5@0.4.3/dist/ml5.min.js"></script>
   <!-- Script to fetch image and pre process starts here -->
   <script>
 
@@ -94,6 +95,91 @@
       image.src = URL.createObjectURL(event.target.files[0]);
       document.getElementById("image").style.display = "block";
     };
+
+    tf.loadLayersModel("model_/model.json").then(function (model) {
+      window.model = model;
+      console.log("my model loaded");
+    });
+
+    function map_results_(pred_) {
+      if (pred_ == 0) {
+        return "Palm";
+      } else if (pred_ == 1) {
+        return "L";
+      } else if (pred_ == 2) {
+        return "Fist";
+      } else if (pred_ == 3) {
+        return "Fist moved";
+      } else if (pred_ == 4) {
+        return "Thumb";
+      } else if (pred_ == 5) {
+        return "Index";
+      } else if (pred_ == 6) {
+        return "Ok";
+      } else if (pred_ == 7) {
+        return "Palm moved";
+      } else if (pred_ == 8) {
+        return "C";
+      } else if (pred_ == 9) {
+        return "Down";
+      }
+    }
+
+
+    function predict() {
+
+      var canvas = document.createElement('canvas');
+      var context = canvas.getContext('2d');
+      var img = document.getElementById('image');
+
+      canvas.width = 224;
+      canvas.height = 224;
+      context.drawImage(img, 0, 0);
+
+      var myData = context.getImageData(0, 0, 224, 224).data;
+      var normalArray = Array.from(myData);
+
+      var input = [];
+      for (var i = 0; i < myData.length; i += 4) {
+        input.push(myData[i]);
+      }
+
+      var input2 = [input, input, input];
+      var inputrray = Array.from(input2);
+
+      window.model.predict([tf.tensor(input).reshape([1, 224, 224, 1])]).array().then(function (scores) {
+        scores = scores[0];
+        predicted = scores.indexOf(Math.max(...scores));
+
+        max_score = Math.max(...scores);
+        second_max_score = Math.max(...scores.filter(n => n != max_score));
+        third_max_score = Math.max(...scores.filter(n => n != max_score && n != second_max_score));
+
+        index_max = scores.indexOf(max_score);
+        index_second_max = scores.indexOf(second_max_score);
+        index_third_max = scores.indexOf(third_max_score);
+
+        pred_max = map_results_(index_max);
+        pred_second_max = map_results_(index_second_max);
+        pred_third_max = map_results_(index_third_max);
+
+        document.getElementById("percent_coding_").innerHTML = (max_score * 100).toFixed(2) + "%";
+        document.getElementById("coding_").innerHTML = pred_max;
+        int_score = parseInt(max_score * 100);
+        document.getElementById("coding_div_").setAttribute("data-percentage", int_score);
+
+        document.getElementById("percent_coding_2").innerHTML = (second_max_score * 100).toFixed(2) + "%";
+        document.getElementById("coding_2").innerHTML = pred_second_max;
+        int_score = parseInt(second_max_score * 100);
+        document.getElementById("coding_div_2").setAttribute("data-percentage", int_score);
+
+        document.getElementById("percent_coding_3").innerHTML = (third_max_score * 100).toFixed(2) + "%";
+        document.getElementById("coding_3").innerHTML = pred_third_max;
+        int_score = parseInt(third_max_score) * 100;
+        document.getElementById("coding_div_3").setAttribute("data-percentage", int_score);
+
+      });
+    }
 
   </script>
 
@@ -142,7 +228,7 @@
                   </div>
                   <div class="col-lg-12">
                     <div class="border-first-button scroll-to-section">
-                      <a href="#about">Predict</a>
+                      <a href="#about" onclick="predict()">Predict</a>
                     </div>
                   </div>
                 </div>
@@ -189,7 +275,7 @@
                 <div class="row">
                   <div class="col-lg-4 col-sm-4">
                     <div class="skill-item first-skill-item wow fadeIn" data-wow-duration="1s" data-wow-delay="0s">
-                      <div class="progress" data-percentage="90">
+                      <div id="coding_div_" class="progress" data-percentage="90">
                         <span class="progress-left">
                           <span class="progress-bar"></span>
                         </span>
@@ -198,8 +284,8 @@
                         </span>
                         <div class="progress-value">
                           <div>
-                            90%<br>
-                            <span>Coding</span>
+                            <h1 id="percent_coding_" style="font-weight:700">90%</h1><br>
+                            <span id="coding_"></span>
                           </div>
                         </div>
                       </div>
@@ -207,7 +293,7 @@
                   </div>
                   <div class="col-lg-4 col-sm-4">
                     <div class="skill-item second-skill-item wow fadeIn" data-wow-duration="1s" data-wow-delay="0s">
-                      <div class="progress" data-percentage="80">
+                      <div id="coding_div_2" class="progress" data-percentage="80">
                         <span class="progress-left">
                           <span class="progress-bar"></span>
                         </span>
@@ -216,8 +302,8 @@
                         </span>
                         <div class="progress-value">
                           <div>
-                            80%<br>
-                            <span>Photoshop</span>
+                            <h1 id="percent_coding_2" style="font-weight:700">80%</h1><br>
+                            <span id="coding_2"></span>
                           </div>
                         </div>
                       </div>
@@ -225,7 +311,7 @@
                   </div>
                   <div class="col-lg-4 col-sm-4">
                     <div class="skill-item third-skill-item wow fadeIn" data-wow-duration="1s" data-wow-delay="0s">
-                      <div class="progress" data-percentage="80">
+                      <div id="coding_div_3" class="progress" data-percentage="70">
                         <span class="progress-left">
                           <span class="progress-bar"></span>
                         </span>
@@ -234,8 +320,8 @@
                         </span>
                         <div class="progress-value">
                           <div>
-                            80%<br>
-                            <span>Animation</span>
+                            <h1 id="percent_coding_3" style="font-weight:700">70%</h1><br>
+                            <span id="coding_3"></span>
                           </div>
                         </div>
                       </div>
