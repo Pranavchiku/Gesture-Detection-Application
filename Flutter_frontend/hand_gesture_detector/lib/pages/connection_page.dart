@@ -5,6 +5,8 @@
 import 'package:camera/camera.dart';
 import 'package:hand_gesture_detector/pages/camera_page.dart';
 import 'package:flutter/material.dart';
+import 'package:hand_gesture_detector/pages/camera.dart';
+import 'package:hand_gesture_detector/pages/temp2.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -123,9 +125,10 @@ class ConnectionPageState extends State<ConnectionPage> {
                     (value) => Navigator.push(
                       context, 
                       // MaterialPageRoute(builder: (context) => CameraExampleHome(),
-                      MaterialPageRoute(builder: (context) => CameraApp(),
+                      
+                      MaterialPageRoute(builder: (context) => TakePictureScreen(camera: value.first), ),
                       ),
-                    ),
+                    // ),
                   );
                   // Navigator.push(
                   //   context,
@@ -241,3 +244,9 @@ class SearchBar extends StatelessWidget {
     );
   }
 }
+
+// Copyright 2013 The Flutter Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+
