@@ -2,6 +2,9 @@ from tflearn.layers.core import input_data,dropout,fully_connected
 from tflearn.layers.conv import conv_2d,max_pool_2d
 from tflearn.layers.estimator import regression
 import tensorflow as tf
+from keras import Input
+from keras.models import Sequential,Model
+from keras.layers import Conv2D,Dense,Flatten,MaxPooling2D,AveragePooling2D,GlobalMaxPooling2D,MaxPool2D,UpSampling2D,concatenate,Dropout
 from PIL import Image
 import numpy as np
 import tflearn
@@ -42,8 +45,32 @@ class AutoEncoder():
         conv_ = fully_connected(conv_, self.num_classes_, activation=self.output_activation_)
 
         self.conv_ = conv_
+    
+    def layers_setup_cnn(self):
+        model = Sequential()
+        model.add(Conv2D(64, (3, 3), activation='relu', input_shape=(224, 224, 1)))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
 
-    def intialize_weights_(self):
+        model.add(Conv2D(64, (3, 3), activation='relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+
+        model.add(Dropout(0.25))
+
+        model.add(Flatten())
+
+        model.add(Dense(256, activation='relu'))
+        model.add(Dropout(0.25))
+
+        model.add(Dense(256, activation='relu'))
+        model.add(Dropout(0.25))
+
+        model.add(Dense(10, activation='softmax'))
+
+        model.load_weights(self.model_path)
+        self.model_ = model
+        return self.model_
+
+    def initialize_weights_(self):
 
         self.layers_setup()
         conv_ = regression(self.conv_, optimizer=self.optimizer_, learning_rate=self.learning_rate_, loss=self.loss_, name='regression')
@@ -51,13 +78,17 @@ class AutoEncoder():
         self.model_.load(self.model_path)
         return self.model_
 
+    def initialize_weights_cnn(self):
+            
+        return self.layers_setup_cnn()
+
 class GestureDetector():
     def __init__(self, image_name, model_, a_weight_, roi_coord_):
         self.image_name = image_name
         self.model_ = model_
         self.a_weight_ = a_weight_
         self.roi_coord_ = roi_coord_
-        self.base_width = 100
+        self.base_width = 224
         self.background = None
         self.threshold = 25
         self.start_recording = False
@@ -65,7 +96,7 @@ class GestureDetector():
     def resize_image(self):
         img = Image.open(self.image_name)
         wpercent = (self.base_width/float(img.size[0]))
-        hsize = int((float(img.size[1])*float(wpercent)))
+        hsize = int(224)
         img = img.resize((self.base_width,hsize), Image.ANTIALIAS)
         img.save(self.image_name)
     
@@ -84,12 +115,15 @@ class GestureDetector():
             return (thresholded, segmented)
 
     def calc_confidence_(self, pred_):
-        return (np.amax(pred_) / (pred_[0][0] + pred_[0][1] + pred_[0][2]))
+        sum_ = 0
+        for probab in pred_[0]:
+            sum_ += probab
+        return np.amax(pred_) / (sum_)
 
     def predict_(self):
         image = cv2.imread(self.image_name)
         gray_ = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        pred_ = self.model_.predict([gray_.reshape(89,100,1)])
+        pred_ = self.model_.predict([gray_.reshape(1, 224,224, 1)])
         return np.argmax(pred_), self.calc_confidence_(pred_)
 
     def show_stats(self, pred_class_, confidence_):
@@ -98,11 +132,25 @@ class GestureDetector():
         class_name = ""
 
         if pred_class_ == 0:
-            class_name = "swing"
-        elif pred_class_ == 1:
             class_name = "palm"
+        elif pred_class_ == 1:
+            class_name = "L"
         elif pred_class_ == 2:
             class_name = "fist"
+        elif pred_class_ == 3:
+            class_name = "fist_moved"
+        elif pred_class_ == 4:
+            class_name = "thumb"
+        elif pred_class_ == 5:
+            class_name = "index"
+        elif pred_class_ == 6:
+            class_name = "ok"
+        elif pred_class_ == 7:
+            class_name = "palm_moved"
+        elif pred_class_ == 8:
+            class_name = "c"
+        elif pred_class_ == 9:
+            class_name = "down"
         
         cv2.putText(txt_image, "Class: " + class_name, (30, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
@@ -165,8 +213,10 @@ class GestureDetector():
 
 if __name__ == "__main__":
     # AutoEncoder setup
-    model = AutoEncoder("TrainedModel/GestureRecogModel.tfl", [None, 89, 100, 1], "adam", 0.001, "categorical_crossentropy", "relu", "softmax", 3)
-    model = model.intialize_weights_()
+    # model = AutoEncoder("TrainedModel/GestureRecogModel.tfl", [None, 89, 100, 1], "adam", 0.001, "categorical_crossentropy", "relu", "softmax", 3)
+    model = AutoEncoder("model/CNN_.tfl", [None, 224, 224, 1], "adam", 0.001, "categorical_crossentropy", "relu", "softmax", 10)
+
+    model = model.initialize_weights_cnn()
 
     detector_ = GestureDetector("Train.png", model, 0.5, (10, 350, 225, 590))
     detector_.start_()
