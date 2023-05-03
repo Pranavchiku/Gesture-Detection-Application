@@ -71,7 +71,7 @@
 //                       MaterialPageRoute(builder: (context) => TextRecognitionWidget()));
 //                    ImagePicker picker = ImagePicker();
 // final imageFile = await picker.getImage(source: ImageSource.camera);
-                 
+
 //                   if (imageFile == null) {
 //                     print("file null hai");
 //                   }
@@ -296,7 +296,6 @@
 //                             onTap: () async {
 //                               print('${i - a - 1}.txt');
 //                               print(nameOfDocs![a]);
-                
 
 //                               // await FlutterShare.share(
 //                               //     title: 'HMI OCR Share',
@@ -482,7 +481,6 @@ Future<void> main() async {
 // A screen that allows users to take a picture using a given camera.
 class TakePictureScreen extends StatefulWidget {
   const TakePictureScreen({
-    
     required this.camera,
   });
 
@@ -582,109 +580,102 @@ class DisplayPictureScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(title: const Text('Display the Picture')),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
       // body: Image.file(File(imagePath)),
-      body:Column(
-          children: [
-            SizedBox(
-              height: 60,
+      body: Column(
+        children: [
+          SizedBox(
+            height: 60,
+          ),
+          Text(
+            "Image Preview",
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade800,
             ),
-            Text(
-              "Image Preview",
+          ),
+          Expanded(
+            child: Image.file(File(imagePath)),
+          ),
+          const SizedBox(height: 16),
+          // Text(
+          //add a button
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DisplayResult()),
+              );
+            },
+            child: Text(
+              "Predict",
               style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
+                color: Colors.black,
+                fontSize: 20,
               ),
             ),
-            Expanded(child: Image.file(File(imagePath)),),
-            const SizedBox(height: 16),
-            // Text(
-            //add a button
-           TextButton(
-                      
-                      onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DisplayResult()),
-                    );
-                  },
-                      child: Text(
-                        "Predict",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-            const SizedBox(height: 40),
-            // TextAreaWidget(
-            //   text: text,
-            //   onClickedCopy: copyToClipboard,
-            // ),
-          ],
-        ),
-     
+          ),
+          const SizedBox(height: 40),
+          // TextAreaWidget(
+          //   text: text,
+          //   onClickedCopy: copyToClipboard,
+          // ),
+        ],
+      ),
     );
   }
 }
+
 class DisplayResult extends StatelessWidget {
   // final String imagePath;
 //  final String imagePath;
 
   const DisplayResult();
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Predicted Results')), 
-        body:Column(
-          children: [
-            SizedBox(
-              height: 60,
-            ),
-            for (var i = 0; i < 2; i++)
+      appBar: AppBar(title: const Text('Predicted Results')),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 60,
+          ),
+          for (var i = 0; i < 2; i++)
             Text(
-              
-              
               "Predicted gesture is: $i ",
-              
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.w600,
                 color: Colors.grey.shade800,
               ),
             ),
-            // Expanded(child: Image.file(File(imagePath)),),
-            const SizedBox(height: 16),
-            // Text(
-            //add a button
-           TextButton(
-                      
-                      onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LandingPage()),
-                    );
-                  },
-                      child: Text(
-                        "Back",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-            const SizedBox(height: 40),
-           
-          ],
-        ),
-     
+          // Expanded(child: Image.file(File(imagePath)),),
+          const SizedBox(height: 16),
+          // Text(
+          //add a button
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => LandingPage()),
+              );
+            },
+            child: Text(
+              "Back",
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
     );
   }
 }

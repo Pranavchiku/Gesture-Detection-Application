@@ -52,7 +52,9 @@ class _LandingPageState extends State<LandingPage> {
                   color: Colors.grey[600],
                 ),
               ),
-              // CustomImage(ImageLink: "images/landing.jpg"),
+              CustomImage(
+                ImageLink: "images/landing.jpg",
+              ),
               Container(
                 height: size.height * 0.07,
                 width: size.width * 0.9,
@@ -89,7 +91,6 @@ class _LandingPageState extends State<LandingPage> {
                       context,
                       MaterialPageRoute(builder: (context) => SignUpForm()),
                     );
-                   
                   },
                   child: Text(
                     "Signup",

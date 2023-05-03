@@ -1,52 +1,25 @@
-// import 'package:alumni_connect_app/main.dart';
-// import 'package:alumni_connect_app/pages/index.dart';
-// import 'package:alumni_connect_app/pages/post_page.dart';
-// import 'package:alumni_connect_app/widget/alumni_card.dart';
 import 'package:camera/camera.dart';
-// import 'package:hand_gesture_detector/pages/temp1.dart';
 import 'package:flutter/material.dart';
 import 'package:hand_gesture_detector/pages/camera.dart';
-// import 'package:hand_gesture_detector/pages/temp2.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 
 import '../main.dart';
-import '../widget/alumni_card.dart';
+import '../widget/gesture_card.dart';
 
 class ConnectionPage extends StatefulWidget {
-  // String email;
-
-  // ConnectionPage({required this.email});
-
   @override
   State<ConnectionPage> createState() => ConnectionPageState();
 }
 
-
 class ConnectionPageState extends State<ConnectionPage> {
   List alumniList = [];
-
-  fetchAlumni() async {
-    var url = Uri.parse("http://127.0.0.1:8001/api/get_all_users/");
-    var response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      var items = json.decode(response.body) as List;
-      setState(() {
-        //iterate over the list and add the items to the list whose email is not equal to the current user's email
-        for (var item in items) {
-          // if (item['email'] != widget.email) {
-            alumniList.add(item);
-          // }
-        }
-      });
-    }
-  }
+  var imageFile;
 
   @override
   void initState() {
     super.initState();
-    fetchAlumni();
   }
 
   Widget build(BuildContext context) {
@@ -63,6 +36,68 @@ class ConnectionPageState extends State<ConnectionPage> {
             Icons.arrow_back_ios,
             size: 20,
             color: Colors.black,
+          ),
+        ),
+      ),
+      floatingActionButton: Container(
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              FloatingActionButton(
+                backgroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                onPressed: () async {
+                  setState(() async {
+                    var image_picker = ImagePicker();
+                    imageFile = await image_picker.pickImage(
+                      source: ImageSource.camera,
+                      maxWidth: 600,
+                    );
+                  });
+
+                  if (imageFile == null) {
+                    print("file null hai");
+                  }
+                },
+                child: Icon(
+                  Icons.camera_alt_outlined,
+                ),
+              ),
+              SizedBox(width: 10),
+              FloatingActionButton(
+                backgroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                onPressed: () async {
+                  setState(() async {
+                    var image_picker = ImagePicker();
+                    imageFile = await image_picker.pickImage(
+                      source: ImageSource.camera,
+                      maxWidth: 600,
+                    );
+                  });
+
+                  if (imageFile == null) {
+                    print("file null hai");
+                  }
+                  // Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => TextRecognitionWidget()));
+                  // final imageFile = await ImagePicker.pickImage(
+                  //   source: ImageSource.gallery,
+                  //   maxWidth: 600,
+                  // );
+                  // if (imageFile == null) {
+                  //   print("file null hai");
+                  // }
+                },
+                child: Icon(
+                  Icons.photo,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -87,16 +122,31 @@ class ConnectionPageState extends State<ConnectionPage> {
                 ),
               ),
               SizedBox(height: 20),
-              SearchBar(size: size),
-                  
-                  
-
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SearchBar(size: size),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.black,
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Icon(
+                      Icons.person,
+                      color: Colors.white,
+                    ),
+                  )
+                ],
+              ),
               for (var i = 0; i < 2; i++)
-                AlumniCard(
+                GestureCards(
                   name: "Gesture $i",
-                  email_to: "Email $i",
-                  imageLink: "assets/student-min.jpg",
-                  email_from: "abc@gmail.com"
+                  imageLink: "images/landing.jpg",
                 ),
             ],
           ),
@@ -112,42 +162,24 @@ class ConnectionPageState extends State<ConnectionPage> {
               IconButton(
                 icon: Icon(Icons.home, color: Colors.black),
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => LandingPage()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LandingPage()));
                 },
               ),
               IconButton(
                 icon: Icon(Icons.camera, color: Colors.black),
-                onPressed: () async{
+                onPressed: () async {
                   await availableCameras().then(
                     (value) => Navigator.push(
-                      context, 
-                      // MaterialPageRoute(builder: (context) => CameraExampleHome(),
-                      
-                      MaterialPageRoute(builder: (context) => TakePictureScreen(camera: value.first), ),
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            TakePictureScreen(camera: value.first),
                       ),
-                    // ),
+                    ),
                   );
-                  // Navigator.push(
-                  //   context,
-                    // MaterialPageRoute(
-                        // builder: (context) =>
-                            // ConnectionPage(email: widget.email)),
-                  // );
                 },
               ),
-              // IconButton(
-              //   icon: Icon(Icons.add_box_outlined, color: Colors.black),
-              //   onPressed: () {
-              //     // Navigator.push(
-              //     //   context,
-              //     //   MaterialPageRoute(
-              //     //       builder: (context) => AlumniPost(email: widget.email)),
-              //     // );
-              //   },
-              // ),
               IconButton(
                 icon: Icon(Icons.logout, color: Colors.black),
                 onPressed: () {
@@ -163,17 +195,9 @@ class ConnectionPageState extends State<ConnectionPage> {
 }
 
 showAlertDialog(BuildContext context) {
-  // set up the button
-  // Widget logOutButton = SalomonBottomBarItem(
-  //   icon: Icon(Icons.logout),
-  //   title: Text("LogOut"),
-  //   selectedColor: Colors.redAccent,
-  // );
   Widget okButton = TextButton(
     child: Text("Logout"),
     onPressed: () {
-      // Navigator.push(
-      //     context, MaterialPageRoute(builder: (context) => HomePage()));
       Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => LandingPage()),
           (route) => false);
@@ -196,8 +220,8 @@ showAlertDialog(BuildContext context) {
       return alert;
     },
   );
-  
 }
+
 class SearchBar extends StatelessWidget {
   const SearchBar({
     Key? key,

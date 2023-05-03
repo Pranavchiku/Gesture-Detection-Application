@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hand_gesture_detector/main.dart';
-import 'package:hand_gesture_detector/pages/connection_page.dart';
+import 'package:hand_gesture_detector/pages/index.dart';
 import 'package:hand_gesture_detector/pages/signup_form.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
