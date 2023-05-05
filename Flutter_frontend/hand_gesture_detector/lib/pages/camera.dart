@@ -426,7 +426,7 @@
 //         // Navigator.push(
 //         //     context, MaterialPageRoute(builder: (context) => HomePage()));
 //         Navigator.of(context).pushAndRemoveUntil(
-//             MaterialPageRoute(builder: (context) => LandingPage()),
+//             MaterialPageRoute(builder: (context) => Index()),
 //             (route) => false);
 //       },
 //     );
@@ -455,6 +455,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:hand_gesture_detector/main.dart';
+import 'package:hand_gesture_detector/pages/index.dart';
 
 Future<void> main() async {
   // Ensure that plugin services are initialized so that `availableCameras()`
@@ -520,7 +521,20 @@ class TakePictureScreenState extends State<TakePictureScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Take a picture')),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: 20,
+            color: Colors.black,
+          ),
+        ),
+      ),
       // You must wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner until the
       // controller has finished initializing.
@@ -536,7 +550,11 @@ class TakePictureScreenState extends State<TakePictureScreen> {
           }
         },
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.black,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15.0))),
         // Provide an onPressed callback.
         onPressed: () async {
           // Take the Picture in a try / catch block. If anything goes wrong,
@@ -566,8 +584,60 @@ class TakePictureScreenState extends State<TakePictureScreen> {
             print(e);
           }
         },
-        child: const Icon(Icons.camera_alt),
+        child: Icon(Icons.camera_alt_outlined),
       ),
+      bottomNavigationBar: Container(
+        height: 55.0,
+        child: BottomAppBar(
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.home, color: Colors.black),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Index()));
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.logout, color: Colors.black),
+                onPressed: () {
+                  showAlertDialog(context);
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  showAlertDialog(BuildContext context) {
+    Widget okButton = TextButton(
+      child: Text("Logout"),
+      onPressed: () {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => LandingPage()),
+            (route) => false);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Logout Alert!!"),
+      content: Text("Are you sure you want to logout?"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
@@ -580,102 +650,265 @@ class DisplayPictureScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(title: const Text('Display the Picture')),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: 20,
+            color: Colors.black,
+          ),
+        ),
+      ),
       // The image is stored as a file on the device. Use the `Image.file`
       // constructor with the given path to display the image.
       // body: Image.file(File(imagePath)),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 60,
-          ),
-          Text(
-            "Image Preview",
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.w600,
-              color: Colors.grey.shade800,
-            ),
-          ),
-          Expanded(
-            child: Image.file(File(imagePath)),
-          ),
-          const SizedBox(height: 16),
-          // Text(
-          //add a button
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => DisplayResult()),
-              );
-            },
-            child: Text(
-              "Predict",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
+      body: SingleChildScrollView(
+        child: Container(
+          width: size.width,
+          height: size.height,
+          padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              bottom: size.height * 0.2,
+              top: size.height * 0.05),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                "Image Preview",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade800,
+                ),
               ),
-            ),
+              Expanded(
+                child: Image.file(File(imagePath)),
+              ),
+              // Text(
+              //add a button
+              Container(
+                height: size.height * 0.07,
+                width: size.width * 0.45,
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DisplayResult(
+                          imagePath: imagePath,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Predict",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 40),
-          // TextAreaWidget(
-          //   text: text,
-          //   onClickedCopy: copyToClipboard,
-          // ),
-        ],
+        ),
       ),
+      bottomNavigationBar: Container(
+        height: 55.0,
+        child: BottomAppBar(
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.home, color: Colors.black),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Index()));
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.logout, color: Colors.black),
+                onPressed: () {
+                  showAlertDialog(context);
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  showAlertDialog(BuildContext context) {
+    Widget okButton = TextButton(
+      child: Text("Logout"),
+      onPressed: () {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => LandingPage()),
+            (route) => false);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Logout Alert!!"),
+      content: Text("Are you sure you want to logout?"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }
 
 class DisplayResult extends StatelessWidget {
-  // final String imagePath;
-//  final String imagePath;
+  final String imagePath;
 
-  const DisplayResult();
+  const DisplayResult({required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(title: const Text('Predicted Results')),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 60,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back_ios,
+            size: 20,
+            color: Colors.black,
           ),
-          for (var i = 0; i < 2; i++)
-            Text(
-              "Predicted gesture is: $i ",
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade800,
-              ),
-            ),
-          // Expanded(child: Image.file(File(imagePath)),),
-          const SizedBox(height: 16),
-          // Text(
-          //add a button
-          TextButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => LandingPage()),
-              );
-            },
-            child: Text(
-              "Back",
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 20,
-              ),
-            ),
-          ),
-          const SizedBox(height: 40),
-        ],
+        ),
       ),
+      // The image is stored as a file on the device. Use the `Image.file`
+      // constructor with the given path to display the image.
+      // body: Image.file(File(imagePath)),
+      body: SingleChildScrollView(
+        child: Container(
+          width: size.width,
+          height: size.height,
+          padding: EdgeInsets.only(
+              left: 20,
+              right: 20,
+              bottom: size.height * 0.2,
+              top: size.height * 0.05),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Text(
+                "Image Result",
+                style: TextStyle(
+                  fontSize: 30,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade800,
+                ),
+              ),
+              Expanded(
+                child: Image.file(File(imagePath)),
+              ),
+              // Text(
+              //add a button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Gesture: ",
+                    style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w400,
+                      color: Colors.grey.shade800,
+                    ),
+                  ),
+                  Text(
+                    "Fist",
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.blue.shade800,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        height: 55.0,
+        child: BottomAppBar(
+          color: Colors.white,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.home, color: Colors.black),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Index()));
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.logout, color: Colors.black),
+                onPressed: () {
+                  showAlertDialog(context);
+                },
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  showAlertDialog(BuildContext context) {
+    Widget okButton = TextButton(
+      child: Text("Logout"),
+      onPressed: () {
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => LandingPage()),
+            (route) => false);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Logout Alert!!"),
+      content: Text("Are you sure you want to logout?"),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'package:universal_html/html.dart' as html;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:hand_gesture_detector/pages/camera.dart';
@@ -8,14 +10,12 @@ import 'dart:convert';
 import '../main.dart';
 import '../widget/gesture_card.dart';
 
-class ConnectionPage extends StatefulWidget {
+class Index extends StatefulWidget {
   @override
-  State<ConnectionPage> createState() => ConnectionPageState();
+  State<Index> createState() => IndexState();
 }
 
-class ConnectionPageState extends State<ConnectionPage> {
-  List alumniList = [];
-  var imageFile;
+class IndexState extends State<Index> {
 
   @override
   void initState() {
@@ -50,51 +50,19 @@ class ConnectionPageState extends State<ConnectionPage> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(15.0))),
                 onPressed: () async {
-                  setState(() async {
-                    var image_picker = ImagePicker();
-                    imageFile = await image_picker.pickImage(
-                      source: ImageSource.camera,
-                      maxWidth: 600,
-                    );
-                  });
-
-                  if (imageFile == null) {
-                    print("file null hai");
-                  }
-                },
-                child: Icon(
-                  Icons.camera_alt_outlined,
-                ),
-              ),
-              SizedBox(width: 10),
-              FloatingActionButton(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                onPressed: () async {
-                  setState(() async {
-                    var image_picker = ImagePicker();
-                    imageFile = await image_picker.pickImage(
-                      source: ImageSource.camera,
-                      maxWidth: 600,
-                    );
-                  });
-
-                  if (imageFile == null) {
-                    print("file null hai");
-                  }
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) => TextRecognitionWidget()));
-                  // final imageFile = await ImagePicker.pickImage(
-                  //   source: ImageSource.gallery,
-                  //   maxWidth: 600,
-                  // );
-                  // if (imageFile == null) {
-                  //   print("file null hai");
+                  await availableCameras().then(
+                    (value) => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            TakePictureScreen(camera: value.first),
+                      ),
+                    ),
+                  );
                   // }
                 },
                 child: Icon(
-                  Icons.photo,
+                  Icons.camera_alt_outlined,
                 ),
               ),
             ],
@@ -123,18 +91,18 @@ class ConnectionPageState extends State<ConnectionPage> {
               ),
               SizedBox(height: 20),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SearchBar(size: size),
                   SizedBox(
                     width: 10,
                   ),
                   Container(
-                    height: 50,
-                    width: 50,
+                    height: 40,
+                    width: 40,
                     decoration: BoxDecoration(
                       color: Colors.black,
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: Icon(
                       Icons.person,
@@ -167,7 +135,7 @@ class ConnectionPageState extends State<ConnectionPage> {
                 },
               ),
               IconButton(
-                icon: Icon(Icons.camera, color: Colors.black),
+                icon: Icon(Icons.camera_alt_outlined, color: Colors.black),
                 onPressed: () async {
                   await availableCameras().then(
                     (value) => Navigator.push(
