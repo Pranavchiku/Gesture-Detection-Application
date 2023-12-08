@@ -32,7 +32,7 @@ the Leap Motion sensor.
 - [OpenCV2: ](https://pypi.org/project/opencv-python/) Image Preprocessing library
 - [Flutter: ](https://docs.flutter.dev/) Flutter Documentation Used
 ## Pipeline:
-### [1. B20CS016_B20CS019_GESTURE.ipynb](https://github.com/Pranavchiku/Gesture-Detection-Application/blob/d403c8d211a0d004daf38631c465c6b836e12a24/B20CS016_B20CS019_GESTURE.ipynb)
+### [1. B20CS016_B20CS019_B20EE090_GESTURE.ipynb](https://github.com/Pranavchiku/Gesture-Detection-Application/blob/d403c8d211a0d004daf38631c465c6b836e12a24/B20CS016_B20CS019_GESTURE.ipynb)
 This is the main file containing EDA, preprocessing, application of various deep learning models.
 - Installing libraries and dependencies
 - Importing the dataset
@@ -109,4 +109,5 @@ flutter upgrade
 | ------------- | ------------- | ------------- |
 | Harshita Kalani (B20CS019)  | PreFinal  | CSE |
 | Pranav Goswami (B20CS016) | PreFinal  | CSE |
+| Parth Mistry (B20EE090) | PreFinal  | EE |
 
